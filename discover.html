@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discover — Lumi</title>
+<meta name="description" content="Discover films by mood, taste DNA, and hidden gems on Lumi.">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+<style>
+.discover-hero{padding:calc(var(--nav-h) + var(--s11)) 0 var(--s10);background:linear-gradient(160deg,#0d071f 0%,#090f1a 60%,var(--bg-primary) 100%);position:relative;overflow:hidden}
+.discover-hero::before{content:'';position:absolute;top:-200px;right:-100px;width:600px;height:600px;background:radial-gradient(circle,rgba(124,111,205,.15) 0%,transparent 70%);pointer-events:none}
+.discover-hero::after{content:'';position:absolute;bottom:-100px;left:-50px;width:400px;height:400px;background:radial-gradient(circle,rgba(232,201,122,.1) 0%,transparent 70%);pointer-events:none}
+.mood-board{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4)}
+@media(max-width:900px){.mood-board{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.mood-board{grid-template-columns:repeat(2,1fr)}}
+.mood-tile{
+  aspect-ratio:4/3;border-radius:var(--r-xl);overflow:hidden;
+  position:relative;cursor:pointer;border:2px solid transparent;
+  transition:all var(--ease-base);
+}
+.mood-tile:hover,.mood-tile.active{border-color:var(--gold);transform:translateY(-4px);box-shadow:var(--glow-gold)}
+.mood-tile-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform var(--ease-slow)}
+.mood-tile:hover .mood-tile-bg{transform:scale(1.06)}
+.mood-tile-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(9,9,15,.85) 100%)}
+.mood-tile-content{position:absolute;bottom:var(--s5);left:var(--s5);right:var(--s5)}
+.mood-tile-icon{font-size:1.8rem;display:block;margin-bottom:var(--s2)}
+.mood-tile-label{font-family:var(--font-display);font-size:1.1rem;font-weight:600}
+.filter-panel{background:var(--bg-secondary);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6)}
+.filter-group{margin-bottom:var(--s5)}
+.filter-group:last-child{margin-bottom:0}
+.filter-label{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--s3);display:block}
+.filter-chips{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.filter-chip{padding:5px 14px;border-radius:var(--r-full);font-size:.8rem;background:var(--bg-elevated);border:1px solid var(--border-subtle);cursor:pointer;transition:all var(--ease-fast);color:var(--text-secondary)}
+.filter-chip:hover,.filter-chip.active{background:var(--gold-glow);border-color:rgba(232,201,122,.4);color:var(--gold)}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s6)}
+.sort-select{background:var(--bg-elevated);border:1px solid var(--border-soft);border-radius:var(--r-md);padding:7px var(--s4);color:var(--text-primary);font-size:.875rem}
+.gem-card{position:relative;border-radius:var(--r-xl);overflow:hidden;cursor:pointer;transition:all var(--ease-base);background:var(--bg-card);border:1px solid var(--border-subtle)}
+.gem-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-xl);border-color:var(--border-soft)}
+.gem-badge{position:absolute;top:var(--s4);right:var(--s4);background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:#000;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:var(--r-full)}
+.taste-quiz-card{background:linear-gradient(135deg,rgba(124,111,205,.12),rgba(232,201,122,.08));border:1px solid var(--border-soft);border-radius:var(--r-2xl);padding:var(--s8);text-align:center}
+.quiz-step{display:none}.quiz-step.active{display:block}
+.quiz-option{padding:var(--s4) var(--s5);border-radius:var(--r-lg);background:var(--bg-elevated);border:1px solid var(--border-subtle);cursor:pointer;transition:all var(--ease-fast);margin-bottom:var(--s3);text-align:left}
+.quiz-option:hover,.quiz-option.selected{border-color:var(--gold);background:var(--gold-glow);color:var(--gold)}
+.discover-grid{display:grid;grid-template-columns:280px 1fr;gap:var(--s8);align-items:start}
+@media(max-width:900px){.discover-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark">L</div>
+      <span class="nav-logo-text grad-gold">Lumi</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"    class="nav-link">Home</a>
+      <a href="discover.html" class="nav-link active">Discover</a>
+      <a href="film.html"     class="nav-link">Films</a>
+      <a href="social.html"   class="nav-link">Social</a>
+      <a href="diary.html"    class="nav-link">Diary</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search-btn" id="searchBtn">🔍</button>
+      <a href="premium.html"><button class="btn btn-primary btn-sm">✦ Premium</button></a>
+      <a href="profile.html"><div class="nav-avatar">MP</div></a>
+    </div>
+  </div>
+</nav>
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search films…">
+    <span class="search-close" id="searchClose">✕</span>
+    <div id="searchResults" style="margin-top:var(--s4)"></div>
+  </div>
+</div>
+
+<!-- DISCOVER HERO -->
+<div class="discover-hero">
+  <div class="container">
+    <div class="section-eyebrow hero-title" style="margin-bottom:var(--s5)">Discovery Engine</div>
+    <h1 class="t-h1 font-display hero-title" style="margin-bottom:var(--s4)">Find your next <span class="grad-gold">obsession.</span></h1>
+    <p class="t-body-lg c-secondary hero-sub" style="max-width:560px;margin-bottom:var(--s8)">
+      Mood-based discovery. Taste DNA matching. Hidden gems. Your perfect film is one click away.
+    </p>
+    <!-- Taste DNA teaser -->
+    <div class="taste-quiz-card" style="max-width:560px">
+      <div style="font-size:2rem;margin-bottom:var(--s4)">🧬</div>
+      <h2 class="t-h3 font-display" style="margin-bottom:var(--s3)">Build Your Taste DNA</h2>
+      <p class="t-sm c-secondary" style="margin-bottom:var(--s6)">Answer 3 quick questions. Get your cinematic archetype + personalised recs.</p>
+      <!-- Quiz steps -->
+      <div id="quizStep0" class="quiz-step active">
+        <div class="filter-label" style="text-align:left">1/3 — Your go-to genre?</div>
+        <div class="quiz-option" onclick="quizSelect(this,'genre','Drama / Thriller')">🎭 Drama / Thriller</div>
+        <div class="quiz-option" onclick="quizSelect(this,'genre','Sci-Fi / Fantasy')">🚀 Sci-Fi / Fantasy</div>
+        <div class="quiz-option" onclick="quizSelect(this,'genre','Action / Adventure')">⚡ Action / Adventure</div>
+        <div class="quiz-option" onclick="quizSelect(this,'genre','Arthouse / World')">🎨 Arthouse / World Cinema</div>
+        <button class="btn btn-primary w-full" onclick="quizNext(0)">Next →</button>
+      </div>
+      <div id="quizStep1" class="quiz-step">
+        <div class="filter-label" style="text-align:left">2/3 — Ideal runtime?</div>
+        <div class="quiz-option" onclick="quizSelect(this,'runtime','Under 90min')">⚡ Under 90 min — lean and sharp</div>
+        <div class="quiz-option" onclick="quizSelect(this,'runtime','90–120min')">🎯 90–120 min — the sweet spot</div>
+        <div class="quiz-option" onclick="quizSelect(this,'runtime','Epic 150min+')">🌅 Epic 150+ min — I commit fully</div>
+        <button class="btn btn-primary w-full" onclick="quizNext(1)">Next →</button>
+      </div>
+      <div id="quizStep2" class="quiz-step">
+        <div class="filter-label" style="text-align:left">3/3 — What matters most?</div>
+        <div class="quiz-option" onclick="quizSelect(this,'priority','Visuals')">🎥 Breathtaking visuals</div>
+        <div class="quiz-option" onclick="quizSelect(this,'priority','Story')">📖 Unforgettable story</div>
+        <div class="quiz-option" onclick="quizSelect(this,'priority','Performance')">🎭 Transcendent performances</div>
+        <div class="quiz-option" onclick="quizSelect(this,'priority','Ideas')">💡 Bold, challenging ideas</div>
+        <button class="btn btn-primary w-full" onclick="quizFinish()">Reveal My Taste DNA 🧬</button>
+      </div>
+      <div id="quizResult" class="quiz-step">
+        <div style="font-size:3rem;margin-bottom:var(--s4)" id="archetypeIcon">🎭</div>
+        <h3 class="t-h3 font-display grad-gold" style="margin-bottom:var(--s3)" id="archetypeTitle">The Auteur</h3>
+        <p class="t-sm c-secondary" style="margin-bottom:var(--s5)" id="archetypeDesc">You crave films that challenge, provoke, and linger long after the credits roll. Directors are your rockstars.</p>
+        <a href="profile.html"><button class="btn btn-primary w-full">View Full Taste Profile →</button></a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOOD BOARD -->
+<section class="section-sm" style="background:var(--bg-secondary)">
+  <div class="container-lg">
+    <div class="section-header reveal"><div><div class="section-eyebrow">Mood Discovery</div><h2 class="t-h2">How are you feeling?</h2></div></div>
+    <div class="mood-board stagger-children" id="moodBoard"></div>
+    <div id="moodFilmResults" style="margin-top:var(--s8)"></div>
+  </div>
+</section>
+
+<!-- FILTER + RESULTS -->
+<section class="section">
+  <div class="container-lg">
+    <div class="discover-grid">
+      <!-- Filter Panel -->
+      <div class="filter-panel" style="position:sticky;top:calc(var(--nav-h)+var(--s5))">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin-bottom:var(--s6)">🔍 Filter Films</div>
+        <div class="filter-group">
+          <span class="filter-label">Genre</span>
+          <div class="filter-chips" id="genreChips"></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Decade</span>
+          <div class="filter-chips" id="decadeChips"></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Country</span>
+          <div class="filter-chips" id="countryChips"></div>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Minimum Score</span>
+          <input type="range" min="0" max="100" value="0" id="scoreSlider" style="width:100%;accent-color:var(--gold)" oninput="updateScoreFilter(this.value)">
+          <div class="t-xs c-muted" style="margin-top:var(--s2)">Critic score ≥ <span id="scoreVal">0</span>%</div>
+        </div>
+        <button class="btn btn-primary w-full" style="margin-top:var(--s5)" onclick="applyFilters()">Apply Filters</button>
+        <button class="btn btn-ghost w-full" style="margin-top:var(--s3)" onclick="resetFilters()">Reset</button>
+      </div>
+      <!-- Results -->
+      <div>
+        <div class="results-header">
+          <div class="t-h4 font-display">All Films <span class="t-sm c-muted" id="resultCount"></span></div>
+          <select class="sort-select" id="sortSelect" onchange="sortResults()">
+            <option value="score">Sort: Top Rated</option>
+            <option value="year-desc">Newest First</option>
+            <option value="year-asc">Oldest First</option>
+          </select>
+        </div>
+        <div class="film-grid-3" id="allFilmsGrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HIDDEN GEMS -->
+<section class="section" style="background:var(--bg-secondary)">
+  <div class="container-lg">
+    <div class="section-header reveal">
+      <div><div class="section-eyebrow">Underrated</div><h2 class="t-h2">Hidden Gems 💎</h2></div>
+    </div>
+    <div class="film-grid-4 stagger-children" id="gemGrid"></div>
+  </div>
+</section>
+
+<!-- BECAUSE YOU LOVED -->
+<section class="section">
+  <div class="container-lg">
+    <div class="section-header reveal">
+      <div><div class="section-eyebrow">Taste Match</div><h2 class="t-h2">Because you loved <span class="grad-gold" id="becauseTitle">The Godfather</span></h2></div>
+    </div>
+    <div class="scroll-row stagger-children" id="becauseRow"></div>
+  </div>
+</section>
+
+<button class="concierge-fab" id="conciergeFab">🎬</button>
+<div class="concierge-panel glass-strong" id="conciergePanel">
+  <div class="concierge-head"><div class="concierge-dot"></div><div><div style="font-weight:600;font-size:.9rem">Lumi AI</div><div class="t-xs c-muted">Discovery guide</div></div></div>
+  <div class="concierge-messages" id="conciergeMessages"><div class="chat-msg chat-msg-ai">Tell me your mood or a film you loved, and I'll find your next obsession! 🎬</div></div>
+  <div class="concierge-quick-btns">
+    <button class="concierge-quick">What to watch tonight?</button>
+    <button class="concierge-quick">Surprise me 🎲</button>
+    <button class="concierge-quick">Similar to Blade Runner</button>
+  </div>
+  <div class="concierge-input-row">
+    <input class="concierge-input" id="conciergeInput" placeholder="Ask anything…">
+    <button class="btn btn-violet btn-sm" id="conciergeSend">↑</button>
+  </div>
+</div>
+<div class="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+// Mood board tiles
+const MOOD_BG = {
+  thrilling:'https://image.tmdb.org/t/p/original/hkBaDkMWbLaf8B1lsWsKX7Ew3Xq.jpg',
+  emotional:'https://image.tmdb.org/t/p/original/xu9zaAevzQ5nnrsXN6JcahLnG4i.jpg',
+  'mind-bending':'https://image.tmdb.org/t/p/original/s2bT29y0ngXxxu2IA8AOzzXTRhd.jpg',
+  epic:'https://image.tmdb.org/t/p/original/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg',
+  funny:'https://image.tmdb.org/t/p/original/feSiISwgEpVzR1v3zv2n2LulWRk.jpg',
+  romantic:'https://image.tmdb.org/t/p/original/nadGENSboB7TIqHBKmPbuagBgm1.jpg',
+  dark:'https://image.tmdb.org/t/p/original/ApiBzeaa95TNYliSbQ8pqz4QcRN.jpg',
+  artistic:'https://image.tmdb.org/t/p/original/ilRyazdMJwN05exqhwK4tMKBYZs.jpg',
+};
+const moodBoard = document.getElementById('moodBoard');
+MOODS.forEach(m=>{
+  const tile = document.createElement('div');
+  tile.className='mood-tile';
+  tile.innerHTML=`<div class="mood-tile-bg" style="background-image:url('${MOOD_BG[m.id]||''}');background-color:var(--bg-elevated)"></div><div class="mood-tile-overlay"></div><div class="mood-tile-content"><span class="mood-tile-icon">${m.icon}</span><div class="mood-tile-label">${m.label}</div></div>`;
+  tile.addEventListener('click',()=>{
+    document.querySelectorAll('.mood-tile').forEach(t=>t.classList.remove('active'));
+    tile.classList.add('active');
+    const films=getFilmsByMood(m.id);
+    const el=document.getElementById('moodFilmResults');
+    el.innerHTML=`<div class="section-eyebrow" style="margin-bottom:var(--s5)">${m.icon} ${m.label} picks</div><div class="scroll-row stagger-children go">${films.map(f=>renderFilmCard(f,'md')).join('')}</div>`;
+    el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+  moodBoard.appendChild(tile);
+});
+
+// Filter chips
+const genres=['Drama','Thriller','Sci-Fi','Action','Comedy','Horror','Romance','Documentary'];
+const decades=['1960s','1970s','1980s','1990s','2000s','2010s','2020s'];
+const countries=['USA','UK','South Korea','France','Italy','Japan','Germany'];
+const makeChips=(id,arr)=>{
+  const el=document.getElementById(id);
+  arr.forEach(v=>{
+    const btn=document.createElement('button');
+    btn.className='filter-chip'; btn.textContent=v;
+    btn.onclick=()=>btn.classList.toggle('active');
+    el.appendChild(btn);
+  });
+};
+makeChips('genreChips',genres);
+makeChips('decadeChips',decades);
+makeChips('countryChips',countries);
+
+let currentFilms=[...FILMS];
+function updateScoreFilter(v){document.getElementById('scoreVal').textContent=v;}
+function applyFilters(){
+  const minScore=parseInt(document.getElementById('scoreSlider').value);
+  const selGenres=[...document.querySelectorAll('#genreChips .active')].map(b=>b.textContent);
+  currentFilms=FILMS.filter(f=>{
+    if(f.scores.critic<minScore) return false;
+    if(selGenres.length && !selGenres.some(g=>f.genres.includes(g))) return false;
+    return true;
+  });
+  renderGrid();
+  showToast(`Showing ${currentFilms.length} films`,'teal');
+}
+function resetFilters(){
+  currentFilms=[...FILMS];
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('scoreSlider').value=0;
+  document.getElementById('scoreVal').textContent='0';
+  renderGrid();
+}
+function sortResults(){
+  const v=document.getElementById('sortSelect').value;
+  if(v==='score') currentFilms.sort((a,b)=>b.scores.critic-a.scores.critic);
+  else if(v==='year-desc') currentFilms.sort((a,b)=>b.year-a.year);
+  else currentFilms.sort((a,b)=>a.year-b.year);
+  renderGrid();
+}
+function renderGrid(){
+  const grid=document.getElementById('allFilmsGrid');
+  document.getElementById('resultCount').textContent=`(${currentFilms.length})`;
+  grid.innerHTML=currentFilms.map(f=>renderFilmCard(f,'md')).join('');
+}
+renderGrid();
+
+// Hidden gems
+document.getElementById('gemGrid').innerHTML=getHidden().map(f=>`
+  <div class="gem-card" onclick="location.href='film.html?id=${f.id}'">
+    <span class="gem-badge">💎 Hidden Gem</span>
+    <img src="${f.poster}" alt="${f.title}" style="width:100%;aspect-ratio:2/3;object-fit:cover" onerror="this.style.background='var(--bg-elevated)'">
+    <div style="padding:var(--s5)">
+      <div class="film-card-title">${f.title}</div>
+      <div class="film-card-meta"><span class="score-pill score-pill-gold">★ ${f.scores.critic}%</span><span class="t-xs c-muted">${f.year}</span></div>
+    </div>
+  </div>`).join('');
+
+// Because you loved
+const seedFilm=FILMS[0];
+document.getElementById('becauseTitle').textContent=seedFilm.title;
+const because=FILMS.filter(f=>f.id!==seedFilm.id&&f.genres.some(g=>seedFilm.genres.includes(g))).slice(0,6);
+document.getElementById('becauseRow').innerHTML=because.map(f=>renderFilmCard(f,'md')).join('');
+
+// Quiz logic
+const quizAnswers={};
+let quizStep=0;
+function quizSelect(el,key,val){
+  document.querySelectorAll(`#quizStep${quizStep} .quiz-option`).forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  quizAnswers[key]=val;
+}
+function quizNext(step){
+  document.getElementById(`quizStep${step}`).classList.remove('active');
+  quizStep=step+1;
+  document.getElementById(`quizStep${quizStep}`).classList.add('active');
+}
+function quizFinish(){
+  const archetypes=[
+    {icon:'🎭',title:'The Auteur',desc:'You crave films that challenge and provoke. Directors are your rockstars.'},
+    {icon:'🚀',title:'The Visionary',desc:'You want to be transported. Stunning worlds and bold ideas excite you.'},
+    {icon:'⚡',title:'The Thrill-Seeker',desc:'Adrenaline is your currency. You live for kinetic cinema.'},
+    {icon:'🌍',title:'The World Traveller',desc:'You seek stories that cross borders and expand your understanding.'},
+  ];
+  const a=archetypes[Math.floor(Math.random()*archetypes.length)];
+  document.getElementById('archetypeIcon').textContent=a.icon;
+  document.getElementById('archetypeTitle').textContent=a.title;
+  document.getElementById('archetypeDesc').textContent=a.desc;
+  document.getElementById('quizStep2').classList.remove('active');
+  document.getElementById('quizResult').classList.add('active');
+}
+</script>
+</body>
+</html>

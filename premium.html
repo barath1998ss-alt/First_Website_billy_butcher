@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lumi Premium — Unlock Your Full Cinema Life</title>
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+<style>
+.premium-hero{min-height:70vh;display:flex;align-items:center;padding-top:var(--nav-h);position:relative;overflow:hidden;background:linear-gradient(160deg,#1a0f2e 0%,#0d1a2e 50%,#0a0a0f 100%)}
+.premium-hero::before{content:'';position:absolute;top:-200px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(232,201,122,.12) 0%,transparent 70%)}
+.premium-hero::after{content:'';position:absolute;bottom:-100px;left:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(124,111,205,.15) 0%,transparent 70%)}
+.plan-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-2xl);padding:var(--s8);transition:all var(--ease-base);position:relative}
+.plan-card.featured{background:linear-gradient(160deg,rgba(232,201,122,.08),rgba(124,111,205,.08));border-color:rgba(232,201,122,.35);transform:scale(1.03)}
+.plan-card:hover{border-color:var(--border-soft)}
+.plan-card.featured:hover{border-color:var(--gold)}
+.featured-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),var(--gold-dim));color:#000;font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:5px 18px;border-radius:var(--r-full)}
+.plan-price{font-family:var(--font-mono);font-size:3rem;font-weight:800;line-height:1;margin:var(--s5) 0 var(--s2)}
+.feature-row{display:flex;align-items:center;gap:var(--s4);padding:var(--s3) 0;border-bottom:1px solid var(--border-subtle)}
+.feature-row:last-child{border-bottom:none}
+.feature-check{color:var(--emerald);font-size:1rem;flex-shrink:0}
+.feature-lock{color:var(--text-muted);font-size:1rem;flex-shrink:0}
+.preview-card{border-radius:var(--r-xl);overflow:hidden;position:relative;background:var(--bg-card);border:1px solid var(--border-subtle)}
+.preview-blur{position:absolute;inset:0;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--s4);background:rgba(9,9,15,.6)}
+.testimonial-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s7)}
+</style>
+</head>
+<body>
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-mark">L</div><span class="nav-logo-text grad-gold">Lumi</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="film.html" class="nav-link">Films</a>
+      <a href="social.html" class="nav-link">Social</a>
+      <a href="diary.html" class="nav-link">Diary</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search-btn" id="searchBtn">🔍</button>
+      <a href="profile.html"><div class="nav-avatar">MP</div></a>
+    </div>
+  </div>
+</nav>
+<div class="search-overlay" id="searchOverlay"><div class="search-box"><span class="search-icon">🔍</span><input type="text" class="search-input" id="searchInput" placeholder="Search…"><span class="search-close" id="searchClose">✕</span><div id="searchResults" style="margin-top:var(--s4)"></div></div></div>
+
+<!-- HERO -->
+<section class="premium-hero">
+  <div class="container" style="position:relative;z-index:2;text-align:center;width:100%">
+    <div class="section-eyebrow hero-title" style="margin-bottom:var(--s5)">✦ Lumi Premium</div>
+    <h1 class="t-display hero-title" style="margin-bottom:var(--s5)">Cinema.<br><span class="grad-gold">Unlocked.</span></h1>
+    <p class="t-body-lg c-secondary hero-sub" style="max-width:540px;margin:0 auto var(--s8)">Advanced taste analytics, pro discovery tools, private clubs, early screening access, and exclusive editorial content.</p>
+    <div class="flex justify-center gap-4 hero-cta">
+      <a href="#plans"><button class="btn btn-primary btn-lg glow-gold">Start Free Trial</button></a>
+      <button class="btn btn-ghost btn-lg" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">See Features →</button>
+    </div>
+    <div class="t-xs c-muted" style="margin-top:var(--s5)">14-day free trial · Cancel anytime · No credit card required to try</div>
+  </div>
+</section>
+
+<!-- FEATURE GRID -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-header reveal text-center" style="justify-content:center;flex-direction:column;align-items:center">
+      <div class="section-eyebrow" style="margin-bottom:var(--s4)">What you unlock</div>
+      <h2 class="t-h2 font-display">Everything a true cinephile needs.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5)" class="stagger-children">
+      ${[
+        {icon:'🧬',title:'Advanced Taste Analytics',desc:'Deep genre DNA maps, director affinity scores, decade breakdowns, and taste evolution timeline.'},
+        {icon:'🔮',title:'Pro Discovery Engine',desc:'AI-powered precision matching, ultra-fine filters, hidden international gems, and exclusives.'},
+        {icon:'🏛',title:'Private Film Clubs',desc:'Create invite-only clubs with custom screening schedules, polls, and shared watchlists.'},
+        {icon:'🎟',title:'Early Screening Access',desc:'Advance digital screening invites for A24, MUBI, and festival circuit films before public release.'},
+        {icon:'📖',title:'Exclusive Editorial',desc:'Long-form criticism, director interviews, behind-the-scenes deep dives from our writer team.'},
+        {icon:'📊',title:'Lumi Wrapped Pro',desc:'Extended annual stats — hourly breakdown, mood mapping, comparative data vs global community.'},
+      ].map(f=>`<div class="glass card-shine" style="border-radius:var(--r-xl);padding:var(--s7)">
+        <div style="font-size:2.2rem;margin-bottom:var(--s5)">${f.icon}</div>
+        <h3 class="t-h4 font-display" style="margin-bottom:var(--s3)">${f.title}</h3>
+        <p class="t-sm c-secondary">${f.desc}</p>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+<!-- LOCKED PREVIEWS -->
+<section class="section" style="background:var(--bg-secondary)">
+  <div class="container">
+    <div class="section-header reveal"><div><div class="section-eyebrow">Premium Preview</div><h2 class="t-h2">A glimpse inside.</h2></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--s5)" class="reveal">
+      <div class="preview-card">
+        <div style="padding:var(--s6)">
+          <div class="section-eyebrow" style="margin-bottom:var(--s4)">Advanced Taste DNA</div>
+          <div style="height:180px;background:linear-gradient(135deg,rgba(124,111,205,.3),rgba(232,201,122,.2));border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:4rem">🧬</div>
+          <div style="margin-top:var(--s4);font-size:.8rem;color:var(--text-muted)">Genre heat maps, director affinities, decade breakdown…</div>
+        </div>
+        <div class="preview-blur"><div style="font-size:1.5rem">🔒</div><div class="t-sm" style="font-weight:600">Premium Feature</div><a href="#plans"><button class="btn btn-primary btn-sm">Unlock →</button></a></div>
+      </div>
+      <div class="preview-card">
+        <div style="padding:var(--s6)">
+          <div class="section-eyebrow" style="margin-bottom:var(--s4)">Private Club Space</div>
+          <div style="height:180px;background:linear-gradient(135deg,rgba(78,205,196,.2),rgba(124,111,205,.2));border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:4rem">🏛</div>
+          <div style="margin-top:var(--s4);font-size:.8rem;color:var(--text-muted)">Your private film club with polls, schedules, and screening room…</div>
+        </div>
+        <div class="preview-blur"><div style="font-size:1.5rem">🔒</div><div class="t-sm" style="font-weight:600">Premium Feature</div><a href="#plans"><button class="btn btn-primary btn-sm">Unlock →</button></a></div>
+      </div>
+      <div class="preview-card">
+        <div style="padding:var(--s6)">
+          <div class="section-eyebrow" style="margin-bottom:var(--s4)">Exclusive Editorial</div>
+          <div style="height:180px;background:linear-gradient(135deg,rgba(232,201,122,.2),rgba(224,92,92,.15));border-radius:var(--r-lg);display:flex;align-items:center;justify-content:center;font-size:4rem">📖</div>
+          <div style="margin-top:var(--s4);font-size:.8rem;color:var(--text-muted)">Long-form criticism and director interviews unavailable elsewhere…</div>
+        </div>
+        <div class="preview-blur"><div style="font-size:1.5rem">🔒</div><div class="t-sm" style="font-weight:600">Premium Feature</div><a href="#plans"><button class="btn btn-primary btn-sm">Unlock →</button></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="plans">
+  <div class="container-sm">
+    <div class="text-center reveal" style="margin-bottom:var(--s10)">
+      <div class="section-eyebrow" style="margin-bottom:var(--s4)">Pricing</div>
+      <h2 class="t-h2 font-display">Simple, honest pricing.</h2>
+      <div style="display:flex;align-items:center;justify-content:center;gap:var(--s3);margin-top:var(--s5)">
+        <span class="t-sm c-secondary">Monthly</span>
+        <div style="width:48px;height:26px;background:var(--gold);border-radius:var(--r-full);position:relative;cursor:pointer" onclick="toggleBilling(this)">
+          <div id="billingToggle" style="width:20px;height:20px;background:#000;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s ease"></div>
+        </div>
+        <span class="t-sm" style="color:var(--gold);font-weight:600">Annual <span style="background:var(--gold-glow);padding:2px 8px;border-radius:var(--r-full);font-size:.7rem">Save 33%</span></span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s6)" class="reveal">
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="section-eyebrow" style="margin-bottom:var(--s4)">Free Forever</div>
+        <h3 class="t-h3 font-display">Lumi Free</h3>
+        <div class="plan-price c-secondary">$0</div>
+        <div class="t-xs c-muted" style="margin-bottom:var(--s6)">Always free. No catch.</div>
+        <a href="profile.html"><button class="btn btn-ghost w-full" style="margin-bottom:var(--s6)">Get Started →</button></a>
+        <div>
+          ${[['Film discovery','✓'],['Diary & watchlist','✓'],['Reviews & ratings','✓'],['Social feed','✓'],['Advanced analytics','✗'],['Private clubs','✗'],['Early screenings','✗'],['Exclusive editorial','✗']].map(([f,v])=>`
+          <div class="feature-row"><span class="${v==='✓'?'feature-check':'feature-lock'}">${v==='✓'?'✓':'✗'}</span><span class="t-sm ${v!=='✓'?'c-muted':''}">${f}</span></div>`).join('')}
+        </div>
+      </div>
+      <!-- Premium -->
+      <div class="plan-card featured">
+        <div class="featured-badge">Most Popular</div>
+        <div class="section-eyebrow" style="margin-bottom:var(--s4)">For the Cinephile</div>
+        <h3 class="t-h3 font-display grad-gold">Lumi Premium</h3>
+        <div class="plan-price grad-gold"><span id="priceDisplay">$5.99</span></div>
+        <div class="t-xs c-muted" style="margin-bottom:var(--s6)" id="billingDesc">per month, billed annually ($71.88/yr)</div>
+        <button class="btn btn-primary w-full" style="margin-bottom:var(--s6)" onclick="startTrial()">Start 14-Day Free Trial</button>
+        <div>
+          ${['Film discovery','Diary & watchlist','Reviews & ratings','Social feed','Advanced taste analytics','Private clubs (up to 3)','Early screening access','Exclusive editorial','Lumi Wrapped Pro','Priority support'].map(f=>`
+          <div class="feature-row"><span class="feature-check">✓</span><span class="t-sm">${f}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background:var(--bg-secondary)">
+  <div class="container">
+    <div class="section-header reveal text-center" style="justify-content:center;flex-direction:column;align-items:center;margin-bottom:var(--s8)">
+      <div class="section-eyebrow" style="margin-bottom:var(--s4)">Community</div>
+      <h2 class="t-h2 font-display">What cinephiles say.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5)" class="stagger-children">
+      ${[
+        {text:'"The taste DNA feature alone is worth the subscription. It articulated my film preferences better than I could myself."',name:'Aria Chen',role:'Film Blogger'},
+        {text:'"I found my film club through Lumi Premium. We\'ve been meeting weekly for 6 months. Nothing else connects cinephiles like this."',name:'James Okafor',role:'Screenwriter'},
+        {text:'"The early screening access is insane. I watched three A24 films before my friends even knew they existed."',name:'Sofia Reyes',role:'Festival Programmer'},
+      ].map(t=>`<div class="testimonial-card">
+        <div style="color:var(--gold);font-size:1.5rem;margin-bottom:var(--s5)">"</div>
+        <p class="t-body c-secondary" style="margin-bottom:var(--s5)">${t.text}</p>
+        <div style="font-weight:600">${t.name}</div>
+        <div class="t-xs c-muted">${t.role}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+<footer style="border-top:1px solid var(--border-subtle);padding:var(--s10) 0">
+  <div class="container text-center">
+    <div class="nav-logo-mark" style="margin:0 auto var(--s4)">L</div>
+    <div class="font-display grad-gold" style="font-size:1.3rem;font-weight:700;margin-bottom:var(--s2)">Lumi</div>
+    <div class="t-xs c-muted">© 2024 Lumi · <a href="index.html" style="color:var(--text-muted)">Home</a> · <a href="discover.html" style="color:var(--text-muted)">Discover</a> · <a href="social.html" style="color:var(--text-muted)">Social</a></div>
+  </div>
+</footer>
+
+<button class="concierge-fab" id="conciergeFab">🎬</button>
+<div class="concierge-panel glass-strong" id="conciergePanel">
+  <div class="concierge-head"><div class="concierge-dot"></div><div><div style="font-weight:600;font-size:.9rem">Lumi AI</div><div class="t-xs c-muted">Premium guide</div></div></div>
+  <div class="concierge-messages" id="conciergeMessages"><div class="chat-msg chat-msg-ai">Considering Premium? I can tell you exactly which features match your taste profile! 🎬</div></div>
+  <div class="concierge-quick-btns"><button class="concierge-quick">What's included?</button><button class="concierge-quick">Worth it for me?</button></div>
+  <div class="concierge-input-row"><input class="concierge-input" id="conciergeInput" placeholder="Ask anything…"><button class="btn btn-violet btn-sm" id="conciergeSend">↑</button></div>
+</div>
+<div class="toast-container"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+let isAnnual=true;
+function toggleBilling(el){
+  isAnnual=!isAnnual;
+  document.getElementById('billingToggle').style.left=isAnnual?'25px':'3px';
+  document.getElementById('priceDisplay').textContent=isAnnual?'$5.99':'$8.99';
+  document.getElementById('billingDesc').textContent=isAnnual?'per month, billed annually ($71.88/yr)':'per month, billed monthly';
+}
+function startTrial(){showToast('🎉 Starting your 14-day free trial!','gold',4000);}
+</script>
+</body>
+</html>

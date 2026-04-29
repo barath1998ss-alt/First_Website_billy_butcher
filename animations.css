@@ -1,0 +1,187 @@
+/* ============================================================
+   LUMI — Animations & Motion
+   ============================================================ */
+
+/* ===== KEYFRAMES ===== */
+@keyframes fadeIn       { from{opacity:0}              to{opacity:1} }
+@keyframes fadeUp       { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown     { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scaleIn      { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+@keyframes slideInRight { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+@keyframes slideInLeft  { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+@keyframes pulse        { 0%,100%{opacity:1} 50%{opacity:.4} }
+@keyframes pulseScale   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+@keyframes shimmer      { from{background-position:-200% center} to{background-position:200% center} }
+@keyframes float        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes rotate       { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes gradientShift {
+  0%   { background-position:0% 50% }
+  50%  { background-position:100% 50% }
+  100% { background-position:0% 50% }
+}
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 20px var(--gold-glow); }
+  50%     { box-shadow: 0 0 50px var(--gold-glow), 0 0 80px var(--gold-glow); }
+}
+@keyframes scanline {
+  0%   { transform:translateY(-100%); }
+  100% { transform:translateY(100vh); }
+}
+
+/* ===== SCROLL REVEAL ===== */
+.reveal {
+  opacity:0; transform:translateY(32px);
+  transition: opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1);
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:.1s; }
+.reveal-delay-2 { transition-delay:.2s; }
+.reveal-delay-3 { transition-delay:.3s; }
+.reveal-delay-4 { transition-delay:.4s; }
+.reveal-delay-5 { transition-delay:.5s; }
+.reveal-delay-6 { transition-delay:.6s; }
+
+/* ===== STAGGER CHILDREN ===== */
+.stagger-children > *       { opacity:0; transform:translateY(20px); }
+.stagger-children.go > *   { animation: fadeUp .6s cubic-bezier(.4,0,.2,1) forwards; }
+.stagger-children.go > *:nth-child(1) { animation-delay:.05s; }
+.stagger-children.go > *:nth-child(2) { animation-delay:.12s; }
+.stagger-children.go > *:nth-child(3) { animation-delay:.19s; }
+.stagger-children.go > *:nth-child(4) { animation-delay:.26s; }
+.stagger-children.go > *:nth-child(5) { animation-delay:.33s; }
+.stagger-children.go > *:nth-child(6) { animation-delay:.40s; }
+.stagger-children.go > *:nth-child(7) { animation-delay:.47s; }
+.stagger-children.go > *:nth-child(8) { animation-delay:.54s; }
+
+/* ===== HERO ANIMATIONS ===== */
+.hero-title  { animation: fadeUp .9s cubic-bezier(.4,0,.2,1) .2s both; }
+.hero-sub    { animation: fadeUp .9s cubic-bezier(.4,0,.2,1) .4s both; }
+.hero-cta    { animation: fadeUp .9s cubic-bezier(.4,0,.2,1) .6s both; }
+
+/* ===== SHIMMER SKELETON ===== */
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-tertiary) 50%, var(--bg-elevated) 75%);
+  background-size:200% 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius:var(--r-md);
+}
+
+/* ===== GRADIENT ANIMATED BG ===== */
+.animated-gradient {
+  background: linear-gradient(270deg, var(--bg-primary), var(--bg-tertiary), var(--bg-secondary), #1a0f2e);
+  background-size: 400% 400%;
+  animation: gradientShift 12s ease infinite;
+}
+
+/* ===== FLOATING ELEMENTS ===== */
+.float-1 { animation: float 4s ease-in-out infinite; }
+.float-2 { animation: float 5s ease-in-out .5s infinite; }
+.float-3 { animation: float 6s ease-in-out 1s infinite; }
+
+/* ===== GLOW EFFECTS ===== */
+.glow-gold   { animation: glowPulse 3s ease-in-out infinite; }
+.glow-static-gold   { box-shadow: var(--glow-gold); }
+.glow-static-violet { box-shadow: var(--glow-violet); }
+
+/* ===== HOVER LIFT ===== */
+.hover-lift { transition: transform var(--ease-base), box-shadow var(--ease-base); }
+.hover-lift:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+
+/* ===== HOVER GLOW ===== */
+.hover-glow-gold:hover   { box-shadow:0 8px 32px var(--gold-glow); }
+.hover-glow-violet:hover { box-shadow:0 8px 32px var(--violet-glow); }
+
+/* ===== CINEMATIC GRAIN OVERLAY ===== */
+.grain::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  opacity:.025; z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+}
+
+/* ===== SCORE RING ANIMATION ===== */
+.score-ring-fill {
+  stroke-dashoffset: var(--target-offset, 283);
+  transition: stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);
+}
+.score-ring-fill.animated { stroke-dashoffset: var(--final-offset, 0); }
+
+/* ===== CARD SHINE ===== */
+.card-shine {
+  position:relative; overflow:hidden;
+}
+.card-shine::before {
+  content:''; position:absolute;
+  top:-50%; left:-75%; width:50%; height:200%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+  transform:skewX(-25deg);
+  transition:left .7s ease;
+  z-index:10; pointer-events:none;
+}
+.card-shine:hover::before { left:125%; }
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar {
+  height:4px; border-radius:var(--r-full);
+  background:var(--bg-elevated); overflow:hidden;
+}
+.progress-fill {
+  height:100%; border-radius:var(--r-full);
+  background:linear-gradient(90deg, var(--violet), var(--gold));
+  width:0%; transition:width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.progress-fill.animated { width:var(--progress-pct, 0%); }
+
+/* ===== PARALLAX ===== */
+.parallax-layer { will-change:transform; }
+
+/* ===== TYPING INDICATOR ===== */
+.typing-dots { display:inline-flex; gap:4px; align-items:center; }
+.typing-dots span {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--text-muted); animation:pulse 1.4s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay:.2s; }
+.typing-dots span:nth-child(3) { animation-delay:.4s; }
+
+/* ===== NUMBER COUNTER ===== */
+.counter-value { display:inline-block; transition:all var(--ease-base); }
+
+/* ===== STAR RATING ===== */
+.star-rating { display:inline-flex; gap:2px; cursor:pointer; }
+.star-rating .star { font-size:1.2rem; color:var(--text-muted); transition:color var(--ease-fast), transform var(--ease-fast); }
+.star-rating .star.filled,
+.star-rating .star:hover,
+.star-rating .star:hover ~ .star { color:var(--gold); }
+.star-rating:hover .star { color:var(--gold); }
+.star-rating .star:hover { transform:scale(1.25); }
+
+/* ===== HERO BADGE ROW ===== */
+.hero-badges { display:flex; flex-wrap:wrap; gap:var(--s3); animation:fadeUp 1s .5s both; }
+
+/* ===== SECTION ENTRY ===== */
+.section-animated { opacity:0; animation:fadeUp .8s cubic-bezier(.4,0,.2,1) both; }
+
+/* ===== SCROLL INDICATOR ===== */
+.scroll-indicator {
+  position:absolute; bottom:var(--s7); left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:var(--s2);
+  color:var(--text-muted); font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+  animation:float 2s ease-in-out infinite;
+}
+.scroll-indicator::after {
+  content:''; width:1px; height:40px;
+  background:linear-gradient(to bottom, var(--text-muted), transparent);
+}
+
+/* ===== FILM CARD GRID LAYOUTS ===== */
+.film-grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s5); }
+.film-grid-5 { display:grid; grid-template-columns:repeat(5,1fr); gap:var(--s5); }
+.film-grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s6); }
+.film-grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s6); }
+
+/* Responsive */
+@media (max-width:1200px) { .film-grid-5{grid-template-columns:repeat(4,1fr)} .film-grid-4{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:900px)  { .film-grid-5,.film-grid-4,.film-grid-3{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:600px)  { .film-grid-5,.film-grid-4,.film-grid-3,.film-grid-2{grid-template-columns:1fr} }
+@media (max-width:900px)  { .nav-links { display:none; } }

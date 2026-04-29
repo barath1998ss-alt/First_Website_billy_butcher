@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Watch Diary — Lumi</title>
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+<style>
+.diary-layout{display:grid;grid-template-columns:1fr 290px;gap:var(--s8);padding-top:var(--s8)}
+@media(max-width:900px){.diary-layout{grid-template-columns:1fr}}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:4px}
+.cal-day{aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.75rem;cursor:pointer;background:var(--bg-elevated);border:1px solid transparent;transition:all var(--ease-fast)}
+.cal-day:hover{border-color:var(--border-soft)}
+.cal-day.has-film{background:rgba(124,111,205,.3);border-color:rgba(124,111,205,.4);color:var(--violet-bright);font-weight:600}
+.cal-day.today{border-color:var(--gold);color:var(--gold)}
+.cal-day.empty{background:transparent;border:none;cursor:default}
+.cal-header-day{font-size:.6rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);text-align:center;padding:var(--s2) 0}
+.log-card{display:flex;gap:var(--s5);align-items:flex-start;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6);margin-bottom:var(--s4);transition:border-color var(--ease-fast)}
+.log-card:hover{border-color:var(--border-soft)}
+.log-poster{width:52px;height:78px;object-fit:cover;border-radius:var(--r-md);flex-shrink:0;background:var(--bg-elevated)}
+.s-stat{background:var(--bg-elevated);border-radius:var(--r-lg);padding:var(--s4);text-align:center}
+.s-stat-v{font-family:var(--font-mono);font-size:1.5rem;font-weight:700;color:var(--gold);line-height:1}
+.s-stat-l{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-top:4px}
+.goal-bar{height:7px;background:var(--bg-tertiary);border-radius:var(--r-full);overflow:hidden;margin:var(--s3) 0}
+.goal-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,var(--violet),var(--gold));width:0;transition:width 1.2s ease}
+</style>
+</head>
+<body>
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-mark">L</div><span class="nav-logo-text grad-gold">Lumi</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="film.html" class="nav-link">Films</a>
+      <a href="social.html" class="nav-link">Social</a>
+      <a href="diary.html" class="nav-link active">Diary</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search-btn" id="searchBtn">🔍</button>
+      <a href="premium.html"><button class="btn btn-primary btn-sm">✦ Premium</button></a>
+      <a href="profile.html"><div class="nav-avatar">MP</div></a>
+    </div>
+  </div>
+</nav>
+<div class="search-overlay" id="searchOverlay"><div class="search-box"><span class="search-icon">🔍</span><input type="text" class="search-input" id="searchInput" placeholder="Search…"><span class="search-close" id="searchClose">✕</span><div id="searchResults" style="margin-top:var(--s4)"></div></div></div>
+
+<!-- HEADER -->
+<div style="padding:calc(var(--nav-h)+var(--s8)) 0 var(--s6);background:linear-gradient(160deg,#0a0f1a 0%,#09090f 100%)">
+  <div class="container">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <div class="section-eyebrow" style="margin-bottom:var(--s3)">Maxwell Park</div>
+        <h1 class="t-h2 font-display">Watch <span class="grad-gold">Diary</span></h1>
+      </div>
+      <button class="btn btn-primary" onclick="document.getElementById('logModal').classList.add('open')">+ Log a Film</button>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-bottom:var(--s11)">
+  <div class="diary-layout">
+    <!-- MAIN -->
+    <div>
+      <!-- Calendar -->
+      <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6);margin-bottom:var(--s6)">
+        <div class="flex items-center justify-between" style="margin-bottom:var(--s5)">
+          <h3 class="font-display" style="font-weight:600" id="calTitle">April 2024</h3>
+          <div class="flex gap-2">
+            <button class="btn btn-ghost btn-sm" onclick="shiftMonth(-1)">‹</button>
+            <button class="btn btn-ghost btn-sm" onclick="shiftMonth(1)">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="calHead"></div>
+        <div class="cal-grid" id="calBody"></div>
+      </div>
+      <!-- Filter -->
+      <div class="flex items-center justify-between" style="margin-bottom:var(--s5)">
+        <div class="section-eyebrow">Logs</div>
+        <div class="flex gap-2">
+          <button class="btn btn-ghost btn-sm active" onclick="filterLogs('all',this)">All</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterLogs('5star',this)">★★★★★</button>
+          <button class="btn btn-ghost btn-sm" onclick="filterLogs('rewatch',this)">Rewatches</button>
+        </div>
+      </div>
+      <div id="logList"></div>
+    </div>
+    <!-- SIDEBAR -->
+    <div style="position:sticky;top:calc(var(--nav-h)+var(--s5))">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s3);margin-bottom:var(--s5)">
+        <div class="s-stat"><div class="s-stat-v">12</div><div class="s-stat-l">Films</div></div>
+        <div class="s-stat"><div class="s-stat-v">4.4★</div><div class="s-stat-l">Avg</div></div>
+        <div class="s-stat"><div class="s-stat-v">23h</div><div class="s-stat-l">Watch Time</div></div>
+        <div class="s-stat"><div class="s-stat-v">3</div><div class="s-stat-l">Rewatches</div></div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s5);margin-bottom:var(--s4)">
+        <div class="section-eyebrow" style="margin-bottom:var(--s3)">2024 Goal</div>
+        <div class="flex justify-between t-sm" style="margin-bottom:var(--s2)"><span>Films watched</span><span class="c-gold font-mono">247 / 365</span></div>
+        <div class="goal-bar"><div class="goal-fill" id="goalBar"></div></div>
+        <div class="t-xs c-muted">68% complete · On track 🎯</div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s5)">
+        <div class="section-eyebrow" style="margin-bottom:var(--s4)">Quick Log</div>
+        <div id="quickLog"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal-backdrop" id="logModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="font-display" style="font-size:1.1rem">Log a Film</h3>
+      <button class="modal-close" onclick="document.getElementById('logModal').classList.remove('open')">✕</button>
+    </div>
+    <div style="margin-bottom:var(--s5)">
+      <label class="t-label" style="display:block;margin-bottom:var(--s3)">Film</label>
+      <select class="input-field" id="modalFilm"></select>
+    </div>
+    <div style="margin-bottom:var(--s5)">
+      <label class="t-label" style="display:block;margin-bottom:var(--s3)">Rating</label>
+      <div style="display:flex;gap:var(--s3)" id="modalStars">
+        <span style="font-size:1.8rem;cursor:pointer;color:var(--text-muted);transition:color var(--ease-fast)" data-v="1" onclick="setRating(1)">★</span>
+        <span style="font-size:1.8rem;cursor:pointer;color:var(--text-muted);transition:color var(--ease-fast)" data-v="2" onclick="setRating(2)">★</span>
+        <span style="font-size:1.8rem;cursor:pointer;color:var(--text-muted);transition:color var(--ease-fast)" data-v="3" onclick="setRating(3)">★</span>
+        <span style="font-size:1.8rem;cursor:pointer;color:var(--text-muted);transition:color var(--ease-fast)" data-v="4" onclick="setRating(4)">★</span>
+        <span style="font-size:1.8rem;cursor:pointer;color:var(--text-muted);transition:color var(--ease-fast)" data-v="5" onclick="setRating(5)">★</span>
+      </div>
+    </div>
+    <div style="margin-bottom:var(--s5)">
+      <label class="t-label" style="display:block;margin-bottom:var(--s3)">Notes</label>
+      <textarea class="input-field" id="modalNote" rows="3" placeholder="What did you think?" style="resize:vertical"></textarea>
+    </div>
+    <label style="display:flex;align-items:center;gap:var(--s3);cursor:pointer;margin-bottom:var(--s5)">
+      <input type="checkbox" id="modalRewatch" style="accent-color:var(--gold)"><span class="t-sm">Rewatch</span>
+    </label>
+    <div class="flex gap-3">
+      <button class="btn btn-primary flex-1" onclick="submitLog()">📓 Log Film</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('logModal').classList.remove('open')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<button class="concierge-fab" id="conciergeFab">🎬</button>
+<div class="concierge-panel glass-strong" id="conciergePanel">
+  <div class="concierge-head"><div class="concierge-dot"></div><div><div style="font-weight:600;font-size:.9rem">Lumi AI</div><div class="t-xs c-muted">Diary assistant</div></div></div>
+  <div class="concierge-messages" id="conciergeMessages"><div class="chat-msg chat-msg-ai">Great diary! You're on a Nolan streak. Want to keep that going tonight? 🎬</div></div>
+  <div class="concierge-quick-btns"><button class="concierge-quick">What to watch tonight?</button><button class="concierge-quick">Surprise me 🎲</button></div>
+  <div class="concierge-input-row"><input class="concierge-input" id="conciergeInput" placeholder="Ask anything…"><button class="btn btn-violet btn-sm" id="conciergeSend">↑</button></div>
+</div>
+<div class="toast-container"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+// Calendar
+const DAYS_SHORT=['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+let cm=3,cy=2024;
+const filmDates=DIARY_ENTRIES.map(e=>e.date);
+
+function buildCalendar(){
+  document.getElementById('calTitle').textContent=`${MONTHS[cm]} ${cy}`;
+  document.getElementById('calHead').innerHTML=DAYS_SHORT.map(d=>`<div class="cal-header-day">${d}</div>`).join('');
+  const first=new Date(cy,cm,1).getDay();
+  const total=new Date(cy,cm+1,0).getDate();
+  let html='';
+  for(let i=0;i<first;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=total;d++){
+    const ds=`${cy}-${String(cm+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const has=filmDates.includes(ds);
+    const today=d===28&&cm===3&&cy===2024;
+    html+=`<div class="cal-day${has?' has-film':''}${today?' today':''}" title="${ds}" onclick="dayClick('${ds}')">${d}</div>`;
+  }
+  document.getElementById('calBody').innerHTML=html;
+}
+function shiftMonth(d){cm+=d;if(cm<0){cm=11;cy--;}if(cm>11){cm=0;cy++;}buildCalendar();}
+function dayClick(ds){const e=DIARY_ENTRIES.find(x=>x.date===ds);if(e){const f=getFilmById(e.filmId);if(f)showToast(`📓 ${f.title} · ${'★'.repeat(e.rating)}`,'gold');}}
+buildCalendar();
+setTimeout(()=>document.getElementById('goalBar').style.width='68%',400);
+
+// Log list
+function renderLogs(entries){
+  document.getElementById('logList').innerHTML=entries.map(e=>{
+    const f=getFilmById(e.filmId);if(!f)return '';
+    return `<div class="log-card reveal visible">
+      <img src="${f.poster}" alt="${f.title}" class="log-poster" onerror="this.style.background='var(--bg-elevated)'">
+      <div style="flex:1">
+        <div class="t-xs c-muted" style="margin-bottom:4px">${e.date}${e.rewatch?' · 🔄':''}</div>
+        <div style="font-weight:600;font-family:var(--font-display)"><a href="film.html?id=${f.id}" style="color:var(--text-primary)">${f.title}</a></div>
+        <div style="color:var(--gold);margin:var(--s2) 0">${'★'.repeat(e.rating)}${'☆'.repeat(5-e.rating)}</div>
+        ${e.note?`<p class="t-sm c-secondary" style="font-style:italic">"${e.note}"</p>`:''}
+      </div>
+      <button class="btn btn-ghost btn-sm" style="flex-shrink:0" onclick="showToast('Edit coming soon','gold')">✏</button>
+    </div>`;
+  }).join('');
+}
+renderLogs(DIARY_ENTRIES);
+
+function filterLogs(type,btn){
+  document.querySelectorAll('[onclick*="filterLogs"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(type==='5star') renderLogs(DIARY_ENTRIES.filter(e=>e.rating===5));
+  else if(type==='rewatch') renderLogs(DIARY_ENTRIES.filter(e=>e.rewatch));
+  else renderLogs(DIARY_ENTRIES);
+}
+
+// Quick log
+const ql=document.getElementById('quickLog');
+FILMS.slice(0,5).forEach(f=>{
+  const d=document.createElement('div');
+  d.style.cssText='display:flex;align-items:center;gap:12px;padding:8px;border-radius:8px;cursor:pointer;transition:background .15s ease';
+  d.innerHTML=`<img src="${f.poster}" style="width:28px;height:42px;object-fit:cover;border-radius:4px;background:var(--bg-elevated)" onerror="this.style.background='var(--bg-elevated)'"><span style="flex:1;font-size:.85rem">${f.title}</span><span style="color:var(--gold)">+</span>`;
+  d.onmouseenter=()=>d.style.background='var(--bg-elevated)';
+  d.onmouseleave=()=>d.style.background='transparent';
+  d.onclick=()=>{document.getElementById('modalFilm').value=f.id;document.getElementById('logModal').classList.add('open');};
+  ql.appendChild(d);
+});
+
+// Modal
+const sel=document.getElementById('modalFilm');
+FILMS.forEach(f=>{const o=document.createElement('option');o.value=f.id;o.textContent=`${f.title} (${f.year})`;sel.appendChild(o);});
+
+let rating=5;
+function setRating(v){
+  rating=v;
+  document.querySelectorAll('#modalStars span').forEach((s,i)=>s.style.color=i<v?'var(--gold)':'var(--text-muted)');
+}
+setRating(5);
+
+function submitLog(){
+  const fId=parseInt(document.getElementById('modalFilm').value);
+  if(!fId){showToast('Pick a film first','crimson');return;}
+  const f=getFilmById(fId);
+  document.getElementById('logModal').classList.remove('open');
+  showToast(`📓 Logged: ${f.title} ${'★'.repeat(rating)}`,'gold');
+}
+document.getElementById('logModal').addEventListener('click',e=>{if(e.target.id==='logModal')e.target.classList.remove('open');});
+</script>
+</body>
+</html>

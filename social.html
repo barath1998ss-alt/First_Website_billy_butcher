@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Social Feed — Lumi</title>
+<meta name="description" content="Film reviews, social activity, and movie clubs on Lumi.">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+<style>
+.social-layout{display:grid;grid-template-columns:1fr 340px;gap:var(--s8);align-items:start;padding-top:var(--s8)}
+@media(max-width:1000px){.social-layout{grid-template-columns:1fr}}
+.feed-item{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6);margin-bottom:var(--s5);transition:border-color var(--ease-fast)}
+.feed-item:hover{border-color:var(--border-soft)}
+.feed-header{display:flex;align-items:center;gap:var(--s4);margin-bottom:var(--s5)}
+.feed-avatar{width:44px;height:44px;border-radius:var(--r-full);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.feed-action{font-size:.8rem;color:var(--text-muted);margin-top:2px}
+.feed-film-row{display:flex;gap:var(--s5);align-items:center;background:var(--bg-elevated);border-radius:var(--r-lg);padding:var(--s4);margin-top:var(--s4);cursor:pointer;transition:background var(--ease-fast)}
+.feed-film-row:hover{background:var(--bg-tertiary)}
+.feed-film-thumb{width:48px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0;background:var(--bg-elevated)}
+.feed-actions-row{display:flex;gap:var(--s5);margin-top:var(--s5);padding-top:var(--s4);border-top:1px solid var(--border-subtle)}
+.feed-action-btn{font-size:.8rem;color:var(--text-muted);cursor:pointer;transition:color var(--ease-fast);display:flex;align-items:center;gap:4px}
+.feed-action-btn:hover{color:var(--text-secondary)}
+.sidebar-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6);margin-bottom:var(--s5)}
+.club-card{background:var(--bg-elevated);border-radius:var(--r-lg);padding:var(--s5);margin-bottom:var(--s3);cursor:pointer;transition:all var(--ease-fast);border:1px solid transparent}
+.club-card:hover{border-color:var(--border-soft);transform:translateX(4px)}
+.club-icon{width:44px;height:44px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.trending-review-card{display:flex;gap:var(--s4);align-items:flex-start;padding:var(--s4) 0;border-bottom:1px solid var(--border-subtle)}
+.trending-review-card:last-child{border-bottom:none}
+.critic-badge{display:inline-flex;align-items:center;gap:4px;background:var(--gold-glow);border:1px solid rgba(232,201,122,.3);color:var(--gold);padding:2px 8px;border-radius:var(--r-full);font-size:.65rem;font-weight:700;letter-spacing:.08em;margin-top:4px}
+.fandom-card{border-radius:var(--r-xl);overflow:hidden;position:relative;cursor:pointer;transition:all var(--ease-base)}
+.fandom-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.feed-tabs{display:flex;gap:var(--s2);margin-bottom:var(--s6)}
+.feed-tab{padding:8px 20px;border-radius:var(--r-full);font-size:.875rem;font-weight:500;cursor:pointer;background:var(--bg-elevated);border:1px solid var(--border-subtle);color:var(--text-secondary);transition:all var(--ease-fast)}
+.feed-tab:hover,.feed-tab.active{background:var(--gold-glow);border-color:rgba(232,201,122,.4);color:var(--gold)}
+</style>
+</head>
+<body>
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><div class="nav-logo-mark">L</div><span class="nav-logo-text grad-gold">Lumi</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="film.html" class="nav-link">Films</a>
+      <a href="social.html" class="nav-link active">Social</a>
+      <a href="diary.html" class="nav-link">Diary</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search-btn" id="searchBtn">🔍</button>
+      <a href="premium.html"><button class="btn btn-primary btn-sm">✦ Premium</button></a>
+      <a href="profile.html"><div class="nav-avatar">MP</div></a>
+    </div>
+  </div>
+</nav>
+<div class="search-overlay" id="searchOverlay"><div class="search-box"><span class="search-icon">🔍</span><input type="text" class="search-input" id="searchInput" placeholder="Search…"><span class="search-close" id="searchClose">✕</span><div id="searchResults" style="margin-top:var(--s4)"></div></div></div>
+
+<!-- PAGE HEADER -->
+<div style="padding:calc(var(--nav-h)+var(--s8)) 0 var(--s6);background:linear-gradient(160deg,#0d071f 0%,#090a0f 100%)">
+  <div class="container">
+    <div class="section-eyebrow" style="margin-bottom:var(--s4)">Community</div>
+    <h1 class="t-h2 font-display">Film <span class="grad-gold">Social Feed</span></h1>
+    <p class="t-sm c-secondary" style="margin-top:var(--s3)">Reviews, diary logs, lists, and fandom activity from the Lumi community.</p>
+  </div>
+</div>
+
+<div class="container-lg" style="padding-bottom:var(--s11)">
+  <div class="social-layout">
+    <!-- MAIN FEED -->
+    <div>
+      <div class="feed-tabs">
+        <button class="feed-tab active" onclick="switchTab(this,'following')">Following</button>
+        <button class="feed-tab" onclick="switchTab(this,'trending')">Trending</button>
+        <button class="feed-tab" onclick="switchTab(this,'critics')">Critics</button>
+      </div>
+      <div id="feedContainer"></div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div>
+      <!-- Top Critics -->
+      <div class="sidebar-card">
+        <div class="section-eyebrow" style="margin-bottom:var(--s5)">Top Critics This Week</div>
+        <div id="topCritics"></div>
+      </div>
+      <!-- Movie Clubs -->
+      <div class="sidebar-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s5)">
+          <div class="section-eyebrow">Movie Clubs</div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Club creation coming soon!','violet')">+ Create</button>
+        </div>
+        <div id="clubsList"></div>
+      </div>
+      <!-- Fandom Spotlight -->
+      <div class="sidebar-card">
+        <div class="section-eyebrow" style="margin-bottom:var(--s5)">Fandom Spotlight</div>
+        <div style="display:flex;flex-direction:column;gap:var(--s4)" id="fandomSpotlight"></div>
+      </div>
+      <!-- Trending Lists -->
+      <div class="sidebar-card">
+        <div class="section-eyebrow" style="margin-bottom:var(--s5)">Trending Lists</div>
+        <div id="trendingLists"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="concierge-fab" id="conciergeFab">🎬</button>
+<div class="concierge-panel glass-strong" id="conciergePanel">
+  <div class="concierge-head"><div class="concierge-dot"></div><div><div style="font-weight:600;font-size:.9rem">Lumi AI</div><div class="t-xs c-muted">Social guide</div></div></div>
+  <div class="concierge-messages" id="conciergeMessages"><div class="chat-msg chat-msg-ai">Looking for film discussion? Ask me to find communities, reviews, or debate rankings! 🎬</div></div>
+  <div class="concierge-quick-btns"><button class="concierge-quick">What to watch tonight?</button><button class="concierge-quick">Rank the Nolans</button></div>
+  <div class="concierge-input-row"><input class="concierge-input" id="conciergeInput" placeholder="Ask anything…"><button class="btn btn-violet btn-sm" id="conciergeSend">↑</button></div>
+</div>
+<div class="toast-container"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+const feedData = [
+  { type:'review', user:USERS[0], film:FILMS[5], rating:4, text:'Nolan\'s most technically impressive work. The IMAX sequences are genuinely breathtaking, and Cillian Murphy carries this massive production with extraordinary subtlety.', time:'2h ago', likes:87, comments:12 },
+  { type:'diary', user:USERS[1], film:FILMS[4], rating:5, text:'Fifth rewatch. Still discovering new layers. Bong Joon-ho is a genius.', time:'4h ago', likes:43, comments:7 },
+  { type:'list', user:USERS[2], title:'Best Action Sequences Ever Committed to Film', count:32, time:'6h ago', likes:156, comments:23 },
+  { type:'review', user:USERS[1], film:FILMS[9], rating:5, text:'Everything Everywhere All at Once is the most audacious film of the decade. It finds profound beauty in chaos and absurdity. Michelle Yeoh gives a career-defining performance.', time:'1d ago', likes:234, comments:45 },
+  { type:'diary', user:USERS[0], film:FILMS[7], rating:5, text:'Simmons is terrifying in the best possible way. Chazelle\'s direction is relentless.', time:'1d ago', likes:67, comments:9 },
+  { type:'review', user:USERS[2], film:FILMS[1], rating:5, text:'Heath Ledger as the Joker is one of cinema\'s greatest performances. Rewatching this is like seeing it for the first time.', time:'2d ago', likes:312, comments:58 },
+];
+
+function renderFeed(items){
+  document.getElementById('feedContainer').innerHTML = items.map(item=>{
+    if(item.type==='review'||item.type==='diary') return renderReviewFeed(item);
+    if(item.type==='list') return renderListFeed(item);
+    return '';
+  }).join('');
+}
+
+function renderReviewFeed(item){
+  const f=item.film, u=item.user;
+  return `<div class="feed-item stagger-children go">
+    <div class="feed-header">
+      <div class="feed-avatar" style="background:${u.avatarColor}">${u.name[0]}</div>
+      <div style="flex:1">
+        <div style="font-weight:600"><a href="profile.html" style="color:var(--text-primary)">${u.name}</a></div>
+        <div class="feed-action">${item.type==='diary'?'📓 logged':'✍️ reviewed'} · ${item.time}</div>
+      </div>
+      <div class="review-stars" style="font-size:.9rem">${'★'.repeat(item.rating)}</div>
+    </div>
+    <a href="film.html?id=${f.id}" class="feed-film-row">
+      <img src="${f.poster}" alt="${f.title}" class="feed-film-thumb" onerror="this.style.background='var(--bg-elevated)'">
+      <div>
+        <div style="font-weight:600;font-family:var(--font-display)">${f.title}</div>
+        <div class="t-xs c-muted">${f.year} · ${f.director}</div>
+        <div class="score-pill score-pill-gold" style="margin-top:var(--s2)">★ ${f.scores.critic}%</div>
+      </div>
+    </a>
+    <p class="t-sm c-secondary" style="margin-top:var(--s4);line-height:1.7">"${item.text}"</p>
+    <div class="feed-actions-row">
+      <button class="feed-action-btn" onclick="likePost(this,${item.likes})">❤ <span>${item.likes}</span></button>
+      <button class="feed-action-btn" onclick="showToast('Comments coming soon!','violet')">💬 ${item.comments}</button>
+      <button class="feed-action-btn" onclick="showToast('🔗 Copied!','gold')">↗ Share</button>
+      <button class="feed-action-btn" style="margin-left:auto" onclick="showToast('Added to your queue!','teal')">+ Watchlist</button>
+    </div>
+  </div>`;
+}
+
+function renderListFeed(item){
+  const u=item.user;
+  return `<div class="feed-item">
+    <div class="feed-header">
+      <div class="feed-avatar" style="background:${u.avatarColor}">${u.name[0]}</div>
+      <div style="flex:1">
+        <div style="font-weight:600">${u.name}</div>
+        <div class="feed-action">📋 created a list · ${item.time}</div>
+      </div>
+    </div>
+    <div style="background:var(--bg-elevated);border-radius:var(--r-lg);padding:var(--s5);cursor:pointer" onclick="showToast('List view coming soon!','gold')">
+      <div style="font-family:var(--font-display);font-weight:600;font-size:1.1rem;margin-bottom:var(--s2)">${item.title}</div>
+      <div class="t-xs c-muted">${item.count} films curated</div>
+    </div>
+    <div class="feed-actions-row">
+      <button class="feed-action-btn" onclick="likePost(this,${item.likes})">❤ <span>${item.likes}</span></button>
+      <button class="feed-action-btn">💬 ${item.comments}</button>
+    </div>
+  </div>`;
+}
+
+function likePost(btn,base){
+  const span=btn.querySelector('span');
+  const liked=btn.classList.toggle('liked');
+  span.textContent=liked?base+1:base;
+  btn.style.color=liked?'var(--crimson)':'';
+}
+
+renderFeed(feedData);
+
+function switchTab(btn,type){
+  document.querySelectorAll('.feed-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(type==='trending'){renderFeed([...feedData].sort(()=>Math.random()-.5));}
+  else if(type==='critics'){renderFeed(feedData.filter(f=>f.likes>100));}
+  else{renderFeed(feedData);}
+}
+
+// Top critics sidebar
+document.getElementById('topCritics').innerHTML=USERS.map((u,i)=>`
+  <div class="trending-review-card">
+    <div class="review-avatar" style="background:${u.avatarColor};width:38px;height:38px;font-size:.8rem;flex-shrink:0">${u.name[0]}</div>
+    <div style="flex:1">
+      <div style="font-weight:500;font-size:.875rem">${u.name}</div>
+      <div class="critic-badge">✦ Verified Critic</div>
+      <div class="t-xs c-muted" style="margin-top:4px">${u.stats.reviews} reviews · ${formatNumber(u.stats.followers)} followers</div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="showToast('Following ${u.name}!','violet')">Follow</button>
+  </div>`).join('');
+
+// Clubs
+const clubs=[
+  {icon:'🎭',name:'Nolan Universe',members:'4.2K',genre:'Sci-Fi/Thriller'},
+  {icon:'🌍',name:'World Cinema Club',members:'2.8K',genre:'International'},
+  {icon:'🎨',name:'Arthouse Collective',members:'1.6K',genre:'Arthouse'},
+  {icon:'👻',name:'Horror Lovers',members:'5.1K',genre:'Horror'},
+];
+document.getElementById('clubsList').innerHTML=clubs.map(c=>`
+  <div class="club-card flex items-center gap-4" onclick="showToast('Joining ${c.name}!','teal')">
+    <div class="club-icon" style="background:var(--bg-tertiary)">${c.icon}</div>
+    <div style="flex:1">
+      <div style="font-weight:500;font-size:.875rem">${c.name}</div>
+      <div class="t-xs c-muted">${c.members} members · ${c.genre}</div>
+    </div>
+    <span style="color:var(--gold);font-size:.8rem">Join →</span>
+  </div>`).join('');
+
+// Fandom spotlight
+document.getElementById('fandomSpotlight').innerHTML=[
+  {film:FILMS[1],content:'Joker Theory Thread',type:'🧵 Theory',count:847},
+  {film:FILMS[4],content:'Parasite Hidden Symbols',type:'🎨 Analysis',count:2341},
+  {film:FILMS[9],content:'EEAAO Fan Art',type:'🖼 Fan Art',count:456},
+].map(f=>`
+  <div style="display:flex;gap:var(--s4);align-items:center;cursor:pointer;padding:var(--s3);border-radius:var(--r-md);transition:background var(--ease-fast)" onmouseenter="this.style.background='var(--bg-elevated)'" onmouseleave="this.style.background='transparent'" onclick="showToast('Opening ${f.film.title} fandom…','violet')">
+    <img src="${f.film.poster}" alt="${f.film.title}" style="width:36px;height:54px;object-fit:cover;border-radius:6px;flex-shrink:0">
+    <div>
+      <div style="font-size:.8rem;color:var(--gold)">${f.type}</div>
+      <div style="font-weight:500;font-size:.875rem;margin-top:2px">${f.content}</div>
+      <div class="t-xs c-muted">${formatNumber(f.count)} engagements</div>
+    </div>
+  </div>`).join('');
+
+// Trending lists
+document.getElementById('trendingLists').innerHTML=LISTS.map(l=>`
+  <div style="padding:var(--s3) 0;border-bottom:1px solid var(--border-subtle);cursor:pointer" onclick="showToast('Opening list…','gold')">
+    <div style="font-size:.875rem;font-weight:500">${l.title}</div>
+    <div class="t-xs c-muted" style="margin-top:4px">❤ ${formatNumber(l.likes)} · ${l.count} films</div>
+  </div>`).join('');
+</script>
+</body>
+</html>

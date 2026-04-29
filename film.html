@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title id="pageTitle">Film — Lumi</title>
+<meta name="description" id="pageDesc" content="Film details on Lumi">
+<link rel="stylesheet" href="css/core.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+<style>
+.film-hero{position:relative;min-height:85vh;display:flex;align-items:flex-end;overflow:hidden;padding-top:var(--nav-h)}
+.film-hero-bg{position:absolute;inset:0;background-size:cover;background-position:center top;transform:scale(1.04);transition:transform 8s ease}
+.film-hero-bg:hover{transform:scale(1)}
+.film-hero-overlay{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,9,15,.95) 0%,rgba(9,9,15,.6) 50%,rgba(9,9,15,.2) 100%),linear-gradient(180deg,rgba(9,9,15,.3) 0%,rgba(9,9,15,1) 100%)}
+.film-hero-content{position:relative;z-index:2;width:100%;padding:var(--s11) 0 var(--s10)}
+.film-poster{width:200px;flex-shrink:0;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-xl);border:1px solid var(--border-soft)}
+.film-poster img{width:100%;aspect-ratio:2/3;object-fit:cover;background:var(--bg-elevated)}
+.scores-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5)}
+@media(max-width:700px){.scores-grid{grid-template-columns:repeat(2,1fr)}}
+.score-ring-wrap{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--s3);background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);padding:var(--s6) var(--s4)}
+.trivia-item{padding:var(--s5);border-radius:var(--r-md);background:var(--bg-card);border:1px solid var(--border-subtle);cursor:pointer;transition:border-color var(--ease-fast)}
+.trivia-item:hover{border-color:var(--gold)}
+.trivia-answer{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease;color:var(--text-secondary);font-size:.9rem;line-height:1.65}
+.trivia-item.open .trivia-answer{max-height:200px;padding-top:var(--s3)}
+.award-item{display:flex;align-items:center;gap:var(--s5);padding:var(--s4) var(--s5);border-radius:var(--r-md);background:var(--bg-card);border:1px solid var(--border-subtle)}
+.award-icon{font-size:1.5rem;flex-shrink:0}
+.similar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s5)}
+@media(max-width:900px){.similar-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.similar-grid{grid-template-columns:repeat(2,1fr)}}
+.theory-card{background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);padding:var(--s6);transition:border-color var(--ease-fast)}
+.theory-card:hover{border-color:var(--border-soft)}
+.platform-row{display:flex;gap:var(--s3);flex-wrap:wrap;margin-top:var(--s4)}
+.meta-row{display:flex;flex-wrap:wrap;gap:var(--s5);margin:var(--s5) 0}
+.meta-chip{font-size:.8rem;color:var(--text-secondary);background:var(--bg-elevated);padding:4px 12px;border-radius:var(--r-full);border:1px solid var(--border-subtle)}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-mark">L</div>
+      <span class="nav-logo-text grad-gold">Lumi</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html"    class="nav-link">Home</a>
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="film.html"     class="nav-link active">Films</a>
+      <a href="social.html"   class="nav-link">Social</a>
+      <a href="diary.html"    class="nav-link">Diary</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-search-btn" id="searchBtn">🔍</button>
+      <a href="profile.html"><div class="nav-avatar">MP</div></a>
+    </div>
+  </div>
+</nav>
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search films…">
+    <span class="search-close" id="searchClose">✕</span>
+    <div id="searchResults" style="margin-top:var(--s4)"></div>
+  </div>
+</div>
+
+<!-- FILM HERO -->
+<div class="film-hero grain" id="filmHero">
+  <div class="film-hero-bg" id="heroBg"></div>
+  <div class="film-hero-overlay"></div>
+  <div class="container-lg" style="width:100%">
+    <div class="film-hero-content">
+      <div style="display:flex;gap:var(--s8);align-items:flex-end;flex-wrap:wrap">
+        <!-- Poster -->
+        <div class="film-poster float-1">
+          <img id="filmPoster" src="" alt="">
+        </div>
+        <!-- Info -->
+        <div style="flex:1;min-width:280px">
+          <div class="section-eyebrow" id="filmGenres" style="margin-bottom:var(--s4)"></div>
+          <h1 class="t-h1 font-display hero-title" id="filmTitle" style="margin-bottom:var(--s2)"></h1>
+          <div class="t-h4 c-secondary font-display" id="filmTagline" style="font-style:italic;margin-bottom:var(--s5)"></div>
+          <div class="meta-row" id="metaRow"></div>
+          <p class="t-body-lg c-secondary" id="filmSynopsis" style="max-width:600px;margin-bottom:var(--s7)"></p>
+          <div class="flex gap-4 flex-wrap" id="heroActions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCORE STACK -->
+<section class="section-sm" style="background:var(--bg-secondary);border-bottom:1px solid var(--border-subtle)">
+  <div class="container">
+    <div class="section-eyebrow" style="margin-bottom:var(--s6)">Score Stack</div>
+    <div class="scores-grid" id="scoresGrid"></div>
+  </div>
+</section>
+
+<!-- WATCH WORTHINESS -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-eyebrow" style="margin-bottom:var(--s5)">Should I watch it?</div>
+    <div id="worthinessCard"></div>
+  </div>
+</section>
+
+<!-- TABS: Reviews / Cast / Trivia / Awards / Similar -->
+<section class="section-sm" style="background:var(--bg-secondary)">
+  <div class="container-lg" id="tabContainer">
+    <div class="tabs" id="filmTabs">
+      <button class="tab-btn active" data-tab="tabReviews">Reviews</button>
+      <button class="tab-btn" data-tab="tabCast">Cast</button>
+      <button class="tab-btn" data-tab="tabTrivia">Trivia & Easter Eggs</button>
+      <button class="tab-btn" data-tab="tabAwards">Awards</button>
+      <button class="tab-btn" data-tab="tabSimilar">Similar Films</button>
+      <button class="tab-btn" data-tab="tabFans">Fan Theories</button>
+    </div>
+    <div style="padding:var(--s8) 0">
+      <!-- Reviews -->
+      <div class="tab-panel active" id="tabReviews">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--s5)" id="reviewsGrid"></div>
+      </div>
+      <!-- Cast -->
+      <div class="tab-panel" id="tabCast">
+        <div class="scroll-row" id="castRow" style="padding-bottom:var(--s4)"></div>
+      </div>
+      <!-- Trivia -->
+      <div class="tab-panel" id="tabTrivia">
+        <div style="display:flex;flex-direction:column;gap:var(--s3);max-width:720px" id="triviaList"></div>
+      </div>
+      <!-- Awards -->
+      <div class="tab-panel" id="tabAwards">
+        <div style="display:flex;flex-direction:column;gap:var(--s3);max-width:640px" id="awardsList"></div>
+      </div>
+      <!-- Similar -->
+      <div class="tab-panel" id="tabSimilar">
+        <div class="similar-grid stagger-children" id="similarGrid"></div>
+      </div>
+      <!-- Fan Theories -->
+      <div class="tab-panel" id="tabFans">
+        <div style="display:flex;flex-direction:column;gap:var(--s5);max-width:760px" id="theoriesList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Streaming -->
+<section class="section-sm">
+  <div class="container">
+    <div class="section-eyebrow" style="margin-bottom:var(--s5)">Where to Watch</div>
+    <div id="streamingRow" class="platform-row"></div>
+  </div>
+</section>
+
+<!-- AI CONCIERGE -->
+<button class="concierge-fab" id="conciergeFab">🎬</button>
+<div class="concierge-panel glass-strong" id="conciergePanel">
+  <div class="concierge-head">
+    <div class="concierge-dot"></div>
+    <div><div style="font-weight:600;font-size:.9rem">Lumi AI</div><div class="t-xs c-muted">Film guide</div></div>
+  </div>
+  <div class="concierge-messages" id="conciergeMessages">
+    <div class="chat-msg chat-msg-ai">Viewing this film page? Ask me about the ending, similar films, or why critics loved it! 🎬</div>
+  </div>
+  <div class="concierge-quick-btns">
+    <button class="concierge-quick">Explain the ending</button>
+    <button class="concierge-quick">Similar recommendations</button>
+    <button class="concierge-quick">Why critics loved it</button>
+  </div>
+  <div class="concierge-input-row">
+    <input class="concierge-input" id="conciergeInput" placeholder="Ask about this film…">
+    <button class="btn btn-violet btn-sm" id="conciergeSend">↑</button>
+  </div>
+</div>
+<div class="toast-container"></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+// Load film from URL param or default to The Godfather (id=1)
+const filmId = parseInt(getURLParam('id')) || 1;
+const film   = getFilmById(filmId);
+
+if (!film) {
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:var(--font-display);font-size:2rem;color:var(--text-secondary)">Film not found 🎬</div>';
+} else {
+  renderFilmPage(film);
+}
+
+function renderFilmPage(f) {
+  // Meta
+  document.getElementById('pageTitle').textContent = `${f.title} (${f.year}) — Lumi`;
+  document.getElementById('pageDesc').content = f.synopsis;
+
+  // Hero BG
+  document.getElementById('heroBg').style.backgroundImage = `url('${f.backdrop}')`;
+  document.getElementById('filmPoster').src = f.poster;
+  document.getElementById('filmPoster').alt = f.title;
+
+  // Title info
+  document.getElementById('filmGenres').textContent = f.genres.join(' · ');
+  document.getElementById('filmTitle').textContent = f.title;
+  document.getElementById('filmTagline').textContent = f.tagline;
+  document.getElementById('filmSynopsis').textContent = f.synopsis;
+
+  // Meta chips
+  document.getElementById('metaRow').innerHTML = [
+    f.year, f.runtime+'m', f.rating, f.language, f.director
+  ].map(m=>`<span class="meta-chip">${m}</span>`).join('');
+
+  // Hero actions
+  const inWL = isInWatchlist(f.id);
+  document.getElementById('heroActions').innerHTML = `
+    <button class="btn btn-primary btn-lg" id="watchlistBtn" onclick="toggleWatchlist(${f.id},this)">
+      ${inWL?'🔖 In Watchlist':'+ Add to Watchlist'}
+    </button>
+    <button class="btn btn-ghost btn-lg" onclick="logDiary(${f.id})">📓 Log to Diary</button>
+    <button class="btn btn-ghost" onclick="shareFilm()">↗ Share</button>`;
+
+  // Score rings
+  const scoreData = [
+    {label:'Critic Score',  val:f.scores.critic,   color:'#52D98C'},
+    {label:'Audience',      val:f.scores.audience,  color:scoreColor(f.scores.audience)},
+    {label:'Community',     val:f.scores.community, color:'var(--violet-bright)'},
+    {label:'Buzz',          val:f.scores.buzz,      color:'var(--gold)'},
+  ];
+  const r=44, circ=2*Math.PI*r;
+  document.getElementById('scoresGrid').innerHTML = scoreData.map(s=>`
+    <div class="score-ring-wrap reveal">
+      <div style="position:relative;width:108px;height:108px">
+        <svg width="108" height="108" viewBox="0 0 108 108">
+          <circle class="score-ring-track" cx="54" cy="54" r="${r}" stroke-width="8"/>
+          <circle class="score-ring-fill" cx="54" cy="54" r="${r}" stroke="${s.color}"
+            stroke-width="8" stroke-dasharray="${circ}" stroke-dashoffset="${circ}"
+            data-score="${s.val}" data-circ="${circ}" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"/>
+        </svg>
+        <div class="score-ring-center">
+          <div class="score-ring-value" style="color:${s.color}">${s.val}</div>
+          <div class="score-ring-label">%</div>
+        </div>
+      </div>
+      <div class="t-xs t-label c-secondary">${s.label}</div>
+    </div>`).join('');
+  // Animate rings after brief delay
+  setTimeout(()=>{
+    document.querySelectorAll('.score-ring-fill').forEach(el=>{
+      const score=parseInt(el.dataset.score), circ=parseFloat(el.dataset.circ);
+      el.style.strokeDashoffset = circ - (score/100)*circ;
+    });
+  }, 300);
+
+  // Worthiness
+  const wm = WORTHINESS_META[f.worthiness] || WORTHINESS_META['crowd-favorite'];
+  document.getElementById('worthinessCard').innerHTML = `
+    <div class="worthiness-card" style="border-color:${wm.color};max-width:460px">
+      <div class="worthiness-icon">${wm.icon}</div>
+      <div class="worthiness-label" style="color:${wm.color}">${wm.label}</div>
+      <div class="worthiness-desc">${wm.desc}</div>
+      <div style="margin-top:var(--s5);display:flex;gap:var(--s3);justify-content:center;flex-wrap:wrap">
+        ${Object.entries(WORTHINESS_META).map(([k,v])=>`
+          <button onclick="document.querySelectorAll('[data-wm]').forEach(b=>b.classList.remove('active'));this.classList.add('active')"
+            data-wm="${k}" class="btn btn-ghost btn-sm ${f.worthiness===k?'active':''}"
+            style="${f.worthiness===k?'border-color:'+wm.color+';color:'+wm.color:''}">
+            ${v.icon} ${v.label}
+          </button>`).join('')}
+      </div>
+    </div>`;
+
+  // Reviews
+  const revs = getReviews(f.id);
+  document.getElementById('reviewsGrid').innerHTML = revs.length
+    ? revs.map(r=>{
+        const u=getUserById(r.userId);
+        return `<div class="review-card card-shine">
+          <div class="review-header">
+            <div class="review-avatar" style="background:${u?.avatarColor||'var(--bg-elevated)'}">${u?.name[0]||'?'}</div>
+            <div><div style="font-weight:600">${u?.name||'User'}</div><div class="t-xs c-muted">${r.date}</div></div>
+            <div class="review-stars" style="margin-left:auto">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+          </div>
+          <p class="review-body">${r.text}</p>
+          <div class="review-footer">
+            <button class="review-helpful" onclick="likeReview(this,${r.id})">👍 ${formatNumber(r.helpful)} helpful</button>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="c-muted">No reviews yet. Be the first!</div>';
+
+  // Cast
+  document.getElementById('castRow').innerHTML = f.cast.map(c=>`
+    <div class="person-card">
+      <div class="person-avatar">
+        <img src="${c.photo}" alt="${c.name}" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--bg-elevated),var(--bg-tertiary))'">
+      </div>
+      <div class="person-name">${c.name}</div>
+      <div class="person-role c-muted">${c.role}</div>
+    </div>`).join('');
+
+  // Trivia
+  const trivias = [
+    {q:`How many takes did the director shoot for ${f.title}?`,a:'Reportedly hundreds — the perfectionism behind the scenes is legendary and well-documented by the crew.'},
+    {q:'Was any of the dialogue improvised?',a:'Several iconic lines were improvised by the actors. The director encouraged spontaneity within the carefully structured scenes.'},
+    {q:'What hidden symbol appears throughout the film?',a:'Eagle-eyed viewers have spotted a recurring motif that foreshadows the climax. Look carefully at background details in key scenes.'},
+    {q:'What major scene was cut from the final edit?',a:'A 12-minute sequence was removed in post-production that would have fundamentally changed one character\'s arc. It may appear in a future director\'s cut.'},
+  ];
+  document.getElementById('triviaList').innerHTML = trivias.map((t,i)=>`
+    <div class="trivia-item" onclick="this.classList.toggle('open')">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-weight:500;font-size:.95rem">${t.q}</div>
+        <span style="color:var(--gold);flex-shrink:0;margin-left:var(--s4)">▾</span>
+      </div>
+      <div class="trivia-answer">${t.a}</div>
+    </div>`).join('');
+
+  // Awards
+  document.getElementById('awardsList').innerHTML = f.awards.map((a,i)=>`
+    <div class="award-item">
+      <div class="award-icon">🏆</div>
+      <div>
+        <div style="font-weight:600">${a}</div>
+        <div class="t-xs c-muted">Year ${f.year + (i===0?0:i)}</div>
+      </div>
+    </div>`).join('');
+
+  // Similar films
+  const similar = FILMS.filter(x=>x.id!==f.id && x.genres.some(g=>f.genres.includes(g))).slice(0,4);
+  document.getElementById('similarGrid').innerHTML = similar.map(s=>renderFilmCard(s,'md')).join('');
+
+  // Fan theories
+  const theories = [
+    {user:'cinephile_max',theory:`The ending of ${f.title} can be read as a deliberate subversion of audience expectations — the director has confirmed he wanted viewers to question their own moral compass.`,votes:341},
+    {user:'sofia_watches',theory:'Notice the recurring color symbolism throughout — each major character is associated with a distinct palette that shifts as their arc progresses.',votes:218},
+    {user:'blockbuster_ben',theory:'The film exists in a larger cinematic universe if you read the background details in scenes 3 and 7. Almost certainly intentional.',votes:97},
+  ];
+  document.getElementById('theoriesList').innerHTML = theories.map(t=>`
+    <div class="theory-card">
+      <div class="flex items-center gap-4" style="margin-bottom:var(--s4)">
+        <div class="review-avatar" style="background:linear-gradient(135deg,var(--violet),var(--gold));width:36px;height:36px;font-size:.75rem">${t.user[0].toUpperCase()}</div>
+        <div style="font-weight:500">@${t.user}</div>
+        <div class="badge badge-violet" style="margin-left:auto">⬆ ${t.votes}</div>
+      </div>
+      <p class="t-body c-secondary">${t.theory}</p>
+    </div>`).join('');
+
+  // Streaming
+  const platformMap = {netflix:'🔴 Netflix',hbo:'🟣 Max',amazon:'🔵 Prime',hulu:'🟢 Hulu',paramount:'🔷 Paramount+',peacock:'🦚 Peacock',showtime:'🟠 Showtime',a24:'⬛ A24'};
+  document.getElementById('streamingRow').innerHTML = f.streaming.map(p=>`
+    <button class="btn btn-ghost btn-sm" onclick="showToast('Opening ${platformMap[p]||p}…','teal')" style="gap:var(--s2)">
+      ${platformMap[p]||p}
+    </button>`).join('');
+}
+
+function logDiary(fId){showToast('📓 Logged to your Diary!','gold');}
+function shareFilm(){navigator.clipboard?.writeText(location.href);showToast('🔗 Link copied!','violet');}
+function likeReview(btn,id){showToast('👍 Marked as helpful','gold');}
+
+// Init tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.tab)?.classList.add('active');
+    // Trigger stagger on similar grid
+    if(btn.dataset.tab==='tabSimilar') document.getElementById('similarGrid').classList.add('go');
+  });
+});
+</script>
+</body>
+</html>
